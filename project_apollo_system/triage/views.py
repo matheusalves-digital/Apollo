@@ -21,8 +21,6 @@ USER_TRIAGE_TYPE = {
 }
 
 FIELDS_NOT_UPDATE = [
-    'arrival_date',
-    'arrival_time',
     'type_of_justice',
     'receive_by',
     'author',

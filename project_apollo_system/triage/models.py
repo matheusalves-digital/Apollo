@@ -9,7 +9,7 @@ class Triage(models.Model):
                                          validators=[
                                             RegexValidator(
                                                 regex=r'^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$',
-                                                message='O número do processo deve estar no formato ^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$',
+                                                message=r'O número do processo deve estar no formato ^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$',
                                                 code='invalid_number_of_process'
                                             )
                                          ])
@@ -37,6 +37,7 @@ class Triage(models.Model):
         SALESFORCE = 'SALESFORCE'
         RDS = 'RDs'
         DISTRIBUTED = 'DISTRIBUÍDOS'
+        ROBO = 'ROBÔ'
         OTHERS = 'OUTROS'
 
     class PreliminarySituation(models.TextChoices):
@@ -50,8 +51,8 @@ class Triage(models.Model):
         JOINED = 'INGRESSADOS'
         LOOSE = 'AVULSO'
 
-    arrival_date = models.DateField(null=False)
-    arrival_time = models.TimeField(null=False)
+    arrival_date = models.DateField(blank=True, null=True)
+    arrival_time = models.TimeField(blank=True, null=True)
     type_of_justice = models.CharField(choices=TypeOfJustice.choices, null=False)
     receive_by = models.CharField(choices=ReceiveBy.choices, null=False)
     date_time_of_treaty = models.DateTimeField(default=timezone.now, null=False)
@@ -60,7 +61,7 @@ class Triage(models.Model):
     hearing_time = models.TimeField(blank=True, null=True)
     preliminary_situation = models.CharField(choices=PreliminarySituation.choices, null=False)
     procedural_stage = models.CharField(choices=ProceduralStage.choices, null=False)
-    fatal_deadline = models.DateField(blank=True, null=True)
+    fatal_deadline = models.DateTimeField(blank=True, null=True)
     obligation_to_do = models.TextField(max_length=400, null=True, blank=True)
     traffic_ticket = models.BooleanField(null=False)
     value_of_the_fine = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
@@ -70,7 +71,7 @@ class Triage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def remaining_time(self):
-        now = timezone.now().date()
+        now = timezone.now()
 
         if self.fatal_deadline:
             delta = self.fatal_deadline - now
@@ -93,8 +94,7 @@ class Triage(models.Model):
 class RioDeJaneiro(Triage):
     cpf_cnpj = models.CharField(
         max_length=20,
-        null=True,
-        blank=True,
+        null=False,
         validators=[
             RegexValidator(
                 regex=r'^\d{3}\.\d{3}\.\d{3}-\d{2}$|^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$',
@@ -106,8 +106,7 @@ class RioDeJaneiro(Triage):
 class Ceara(Triage):
     cpf_cnpj = models.CharField(
         max_length=20,
-        null=True,
-        blank=True,
+        null=False,
         validators=[
             RegexValidator(
                 regex=r'^\d{3}\.\d{3}\.\d{3}-\d{2}$|^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$',

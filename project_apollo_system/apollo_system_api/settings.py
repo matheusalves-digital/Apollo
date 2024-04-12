@@ -34,8 +34,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_crontab',
     'users',
     'triage',
+]
+
+CRONJOBS = [
+    ('0 10 * * *', 'triage.cron.update_judicial_determination')
 ]
 
 MIDDLEWARE = [
@@ -52,14 +57,15 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://192.168.13.126:3000",
-    "http://192.168.121.1:3000",
-    "http://192.168.13.69:3000",
-    "http://192.168.13.131:3000"
+    "http://192.168.3.144:3000", # Thais Ventura  
+    "http://192.168.3.146:3000", # Letícia Nobre
+    "http://192.168.3.2:3000", # Matheus Ponte
+    "http://192.168.3.118:3000", # Pedro Italo
+    "http://192.168.100.26:3000", # Thais Ventura
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',

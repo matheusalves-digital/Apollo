@@ -3,6 +3,8 @@
 # O shell irá encerrar a execução do script quando um comando falhar
 set -e
 
+cron &
+
 while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
   echo "🟡 Waiting for Postgres Database Startup ($POSTGRES_HOST $POSTGRES_PORT) ..."
   sleep 2
@@ -21,4 +23,4 @@ python manage.py migrate triage --noinput
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
-python manage.py runserver 0.0.0.0:8000
+su -s /bin/sh -c 'python manage.py runserver 0.0.0.0:8000' duser

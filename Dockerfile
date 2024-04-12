@@ -5,6 +5,8 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt update && apt install -y netcat-openbsd
 
+RUN apt-get update && apt-get install -y cron
+
 COPY project_apollo_system /project_apollo_system
 COPY scripts /scripts
 
@@ -27,6 +29,6 @@ RUN python -m venv /venv && \
 
 ENV PATH="/scripts:/venv/bin:$PATH"
 
-USER duser
+USER root
 
 CMD ["commands.sh"]
