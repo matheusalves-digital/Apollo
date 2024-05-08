@@ -5,6 +5,7 @@ from .serializers import TriageSerializer, RioDeJaneiroSerializer, CearaSerializ
 from django.http import Http404
 from rest_framework.response import Response
 
+
 USER_TRIAGE_TYPE = {
     'RioDeJaneiro': {
         'serializer': RioDeJaneiroSerializer,
@@ -21,10 +22,10 @@ USER_TRIAGE_TYPE = {
 }
 
 FIELDS_NOT_UPDATE = [
+    'number_of_process',
     'type_of_justice',
     'receive_by',
     'author',
-    'cpf_cnpj'
 ]
 
 

@@ -1,11 +1,13 @@
 from django.db import models
-from users.models import User
 from django.utils import timezone
 from django.core.validators import RegexValidator
+import uuid
+from django.conf import settings
 
 class Triage(models.Model):
-    number_of_process = models.CharField(primary_key=True, 
-                                         max_length=25,
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    number_of_process = models.CharField(max_length=25,
+                                         unique=True,
                                          validators=[
                                             RegexValidator(
                                                 regex=r'^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$',
@@ -68,7 +70,10 @@ class Triage(models.Model):
     type_of_fine = models.CharField(choices=TypeOfFine.choices, max_length=255, null=True, blank=True)
     judicial_determination = models.CharField(max_length=255, null=True, blank=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='triages')
+
+    def __str__(self):
+        return self.number_of_process
 
     def remaining_time(self):
         now = timezone.now()

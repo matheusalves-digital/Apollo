@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from .models import Triage, RioDeJaneiro, Ceara, SaoPaulo
+from rest_framework.exceptions import ValidationError
+
 
 FIELDS_RIODEJANEIRO_CEARA = [
+    'id',
     'number_of_process',
     'arrival_date',
     'arrival_time',
@@ -23,6 +26,7 @@ FIELDS_RIODEJANEIRO_CEARA = [
 ]
 
 FIELDS_SAOPAULO = [
+    'id',
     'number_of_process',
     'arrival_date',
     'arrival_time',
@@ -46,10 +50,22 @@ FIELDS_SAOPAULO = [
     'user'
 ]
 
+
 class TriageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Triage
         fields = '__all__'
+
+    def validate_number_of_process(self, value):
+        print("Validating number of process:", value)
+        existing_triage = Triage.objects.filter(number_of_process=value).first()
+        
+        if existing_triage:
+            print("Process number exists, raised by:", existing_triage.user.get_full_name())
+            
+            raise ValidationError(f'Este processo já foi cadastrado por {existing_triage.user.get_full_name()}.')
+        
+        return value
 
 class RioDeJaneiroSerializer(serializers.ModelSerializer):
     class Meta:
